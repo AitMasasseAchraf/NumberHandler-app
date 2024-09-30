@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Number Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-right: 20px;
+            width: 100%; /* Make the container responsive */
+        }
+
+        .results {
+            max-width: 300px;
+            margin-left: 20px;
+        }
+
+        h2 {
+            color: #4a90e2;
+            text-align: center;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .numbers-grid input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .numbers-grid input:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            width: 48%; /* Set width to slightly less than half */
+            margin-right: 2%; /* Space between the buttons */
+        }
+
+        button:hover {
+            background-color: #357ab8;
+        }
+
+        .error {
+            color: #d9534f;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f2dede;
+            border: 1px solid #ebccd1;
+            border-radius: 4px;
+        }
+
+        .success {
+            color: #5cb85c;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #dff0d8;
+            border: 1px solid #d6e9c6;
+            border-radius: 4px;
+        }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .results-content {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            max-width: 300px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Media Queries for Responsive Design */
+        @media (max-width: 768px) {
+            .numbers-grid {
+                grid-template-columns: repeat(3, 1fr); /* 3 columns on tablets */
+            }
+
+            button {
+                width: 100%; /* Full width buttons on small screens */
+                margin: 5px 0; /* Margin between buttons */
+            }
+
+            .results-content {
+                position: static; /* Change position on smaller screens */
+                margin-top: 20px; /* Space above results */
+            }
+
+            .container {
+                margin-right: 0; /* No margin on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .numbers-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile phones */
+            }
+
+            h2 {
+                font-size: 24px; /* Smaller heading on mobile */
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Check Missing Numbers</h2>
+        <form method="POST">
+            <div class="numbers-grid">
+                <!-- Dynamically create 40 input fields for number entry -->
+                {% for i in range(1, 41) %}
+                    <div>
+                        <label for="num{{ i }}">Number {{ i }}</label><br>
+                        <input type="text" id="num{{ i }}" name="num{{ i }}" value="{{ entered_numbers[i - 1] if i <= entered_numbers|length else '' }}" required><br>
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="display: flex; flex-wrap: wrap;"> <!-- Flex container for buttons -->
+                <button type="submit" name="check">Check</button>
+                <button type="submit" name="clear">Clear</button>
+            </div>
+        </form>
+
+        <!-- Display errors -->
+        {% if errors %}
+            <div class="error">
+                <ul>
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Results section -->
+    <div class="results-content">
+        {% if result %}
+            <div class="{{ 'success' if not missing_numbers else 'error' }}">
+                <p>{{ result }}</p>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
